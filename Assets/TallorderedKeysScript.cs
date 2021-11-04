@@ -395,15 +395,17 @@ public class TallorderedKeysScript : MonoBehaviour
     private IEnumerator RevealExpected()
     {
         disp.text = "";
-        var correctPresses = 0;
+        int correctPresses = 0;
+        var correctPressOrder = Enumerable.Range(0, 6).OrderBy(a => answer[a]).Select(a => (a + 1).ToString());
         for (int x = 0; x < 6; x++)
         {
-            if (answer[x].ToString() == presses[x])
-            correctPresses++;
+            //Debug.LogFormat("{0},{1}", correctPressOrder.ElementAt(x), presses[x]);
+            if (correctPressOrder.ElementAt(x) == presses[x])
+                correctPresses++;
         }
-        for (int x = 0; x < correctPresses; x++)
+        for (int x = 0; x < meter.Length; x++)
         {
-            meter[x].material = keyColours[8];
+            meter[x].material = x < correctPresses ? keyColours[8] : keyColours[7];
         }
         var expectedButtons = new Dictionary<int, string>();
         for (var x = 0; x < answer.Count; x++)
@@ -424,7 +426,7 @@ public class TallorderedKeysScript : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         yield return new WaitForSeconds(2f);
-        for (int x = 0; x < 6; x++)
+        for (int x = 5; x >= 0; x--)
         {
             meter[x].material = keyColours[7];
             yield return new WaitForSeconds(0.1f);
